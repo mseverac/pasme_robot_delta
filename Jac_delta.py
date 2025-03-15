@@ -2,7 +2,7 @@ import numpy as np
 from MGD_delta import *
 from MGI_delta import *
 
-def Jac_delta(alpha, l1, l2, r):
+def Jac_delta(alpha, l1, l2, r,X=np.array([])):
     """calcule les jacobiennes tq J1*dX=J2*dQ"""
     phi1=2*np.pi/3
     phi2=4*np.pi/3
@@ -25,13 +25,18 @@ def Jac_delta(alpha, l1, l2, r):
     Rs=[R00,R01,R02]
     Rsi=[R00,R10,R20]
     Cs,us=delta_pts_C_u(alpha,l1,r)
-    Ds=delta_pts_D(MGD_delta(alpha, l1, l2, r),r)
+    # print(f"alpha = {alpha}")
+    if len(X)==0 : X=MGD_delta(alpha, l1, l2, r)
+    # print(f"X = {X}")
+    Ds=delta_pts_D(X,r)
     vs=[]
 
     Eqs=[]
     Equs=[]
     Equvl=[]
     for i in range(3):
+        # print(f"Cs[{i}] = {Cs[i]}")
+        # print(f"Ds[{i}] = {Ds[i]}")
         v=Ds[i]-Cs[i]
         v=(v/np.linalg.norm(v))[0]
         vs.append(v)
@@ -56,5 +61,3 @@ l2 = 0.520
 r = 0.634 * l1
 r2 = 0.033
 r1 = r + r2
-
-
