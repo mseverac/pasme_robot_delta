@@ -39,12 +39,9 @@ def Jac_delta(alpha, l1, l2, r):
         Eq=np.array(Rs[i]@E)
         Eqs.append(Eq)
 
-        print("Eq * u:",Eq@Rsi[i]@us[i])
         Equs.append((Eq@Rsi[i]@us[i])[0])
-        print("Equ * v:",np.dot(Equs[i],v))
         Equvl.append((np.dot(Equs[i],v))[0,0])
 
-    print("Equvl : ",Equvl)
 
     J1=np.matrix([vs[0],vs[1],vs[2]])
 
@@ -52,21 +49,12 @@ def Jac_delta(alpha, l1, l2, r):
 
     return J1,J2
 
+
+
 l1 = 0.260
 l2 = 0.520
 r = 0.634 * l1
 r2 = 0.033
 r1 = r + r2
 
-X = np.array([0.0, 0.0, -0.35])
-b = MGI_delta(X, l1, l2, r)
-b_degre = (180 / np.pi) * b
-X_calculated = MGD_delta(b, l1, l2, r)
-Cs=delta_pts_C_u(b,l1,r1)
-Ds=delta_pts_D(X_calculated,r2)
 
-J1,J2=Jac_delta(b, l1, l2, r)
-
-print("Jacobian matrix J:")
-print(J1)
-print(J2)
