@@ -31,16 +31,36 @@ def discrétisation(centre,pas):
     return points
 
 
+def condition_raideur(Ktet,J):
+    Cx=J@np.linalg.inv(Ktet)@J.T
+    normCx=np.linalg.norm(Cx,2)
+    dpmax=normCx*10
+    print(f"Ktet = {Ktet}")
+    print(f"normCx = {normCx}")
+    print(f"dpmax = {dpmax}")
+    print(f"Cx = {Cx}")
+    return (0.0001-dpmax)*1000
+
 
 
 
 def condition(x,gammaMax = 40 * (np.pi / 180),alphaBetaMin = 30 * (np.pi / 180)):
     """renvoie True si les conditions sont vérifiées, False sinon"""
-    l1,l2,r1,r2=x
+    l1,l2,r1,r2,a,b=x
+    Cgeo=np.array([b-a+0.01])*1000
+
+    I=(pow(a,4)-pow(b,4))/12
+    E=70e9
+    k=3*E*I/(l1**3)
+
+
+    Ktet=np.diag([k,k,k])
+
     Cws,H,D,Zh=condition_ws(l1,l2,r1,r2)
     centre = np.array([0,0,Zh-0.25])
-    pts=discrétisation(centre,0.1)
+    pts=discrétisation(centre,0.15)
     C_cond=[]
+    C_raideur=[]
     if Cws[0]>0 or Cws[1]>0:
         print("ws pas assez grand")
         print(f"l1 = {l1}")
@@ -49,7 +69,7 @@ def condition(x,gammaMax = 40 * (np.pi / 180),alphaBetaMin = 30 * (np.pi / 180))
         print(f"Zh = {Zh}")
         print(f"H = {H}")
         print(f"D = {D}")
-        print(len(np.concatenate((Cws, np.ones(len(pts))))))
+        print(len(np.concatenate((Cws, np.ones(2*len(pts))))))
         return np.concatenate((Cws, np.ones(len(pts))))
     for pt in pts:
         
@@ -82,6 +102,7 @@ def condition(x,gammaMax = 40 * (np.pi / 180),alphaBetaMin = 30 * (np.pi / 180))
             print(len(Cws))
             return Cws
         J=np.linalg.inv(J1)@J2
+        C_raideur.append(condition_raideur(Ktet,J))
        
         cond=np.linalg.cond(J)
         if cond==np.inf:
@@ -90,8 +111,8 @@ def condition(x,gammaMax = 40 * (np.pi / 180),alphaBetaMin = 30 * (np.pi / 180))
             C_cond.append(0.1-1/cond)
 
     C_cond=np.array(C_cond)
-
-    C = np.concatenate((Cws, C_cond))
+    C_raideur=np.array(C_raideur)
+    C = np.concatenate((Cgeo,Cws, C_cond,C_raideur))
     return C
 
 

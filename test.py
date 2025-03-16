@@ -76,13 +76,39 @@ Zh = -l1 * np.sqrt(1 + (l2 / l1) ** 2 - 2 * (l2 / l1) * np.cos(alphaBetaMin))
 
 
 
-"""
 
-C=condition([0.35704558, 0.66003772 ,0.1    ,    0.033     ],gammaMax,alphaBetaMin)
+x=[4.41053309e-01 ,1.02938724e+00, 3.74043341e-01, 3.30000000e-02,1.00000000e-02 ,3.49751378e-17]
+C=condition(x)
 print(C)
+print(C[0])
+print(C[1])
+print(C[2])
+print(C[3])
+print(C[4])
+print(C[5])
+print(C[6])
+print(C[7])
+print(C[8])
+print(C[9])
+print(C[10])
+print(C[11])
+print(C[12])
+print(C[13])
+print(C[14])
+print(C[15])
+print(C[16])
+print(C[17])
+print(C[18])
+print(C[19])
+print(C[20])
+print(C[21])
 print(max(C))
-print(len(C))
-print("condition faite")"""
+print("Index of max value in C:", np.argmax(C))
+print(C[np.argmax(C)])
+print(C[np.argmax(C)+1])
+print(C[np.argmax(C)+2])
+
+print("condition faite")
 
 
 
